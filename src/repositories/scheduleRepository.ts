@@ -33,6 +33,7 @@ export class ScheduleRepository {
       where: { doctorId },
       include: {
         doctor: true,
+        ScheduleDoctor: true,
       },
     });
   }
@@ -41,6 +42,7 @@ export class ScheduleRepository {
     return await prisma.schedule.findMany({
       include: {
         doctor: true,
+        ScheduleDoctor: true,
       },
     });
   }

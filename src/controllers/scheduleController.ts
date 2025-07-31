@@ -11,9 +11,11 @@ export class ScheduleController {
 
   createSchedule = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const { doctorId, day, openTime, closeTime } = req.body;
+      console.log("req.body", req.body);
+      
+      const { doctorId, day, openTime, closeTime, bookingTime } = req.body;
 
-      if (!doctorId || !day || !openTime || !closeTime) {
+      if (!doctorId || !day || !openTime || !closeTime || !bookingTime) {
         return sendError(res, "Semua field harus diisi", 400);
       }
 
@@ -34,7 +36,8 @@ export class ScheduleController {
         parseInt(doctorId),
         day,
         openTime,
-        closeTime
+        closeTime,
+        bookingTime
       );
 
       return sendSuccess(res, schedule, "Jadwal berhasil dibuat", 201);
@@ -45,6 +48,8 @@ export class ScheduleController {
 
   getSchedules = async (req: Request, res: Response): Promise<Response> => {
     try {
+      console.log("req.query", req.query);
+      
       const { doctorId } = req.query;
 
       const schedules = await this.scheduleService.getDoctorSchedules(

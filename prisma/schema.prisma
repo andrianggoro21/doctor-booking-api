@@ -41,10 +41,22 @@ model Schedule {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  doctor Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  doctor         Doctor           @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  ScheduleDoctor ScheduleDoctor[]
 
   @@unique([doctorId, day])
   @@map("schedules")
+}
+
+model ScheduleDoctor {
+  id          Int      @id @default(autoincrement())
+  scheduleId  Int
+  bookingTime String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  schedule Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  @@map("schedule_doctor")
 }
 
 model Booking {

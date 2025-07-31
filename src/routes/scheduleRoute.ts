@@ -16,7 +16,7 @@ scheduleRoute.post(
 );
 scheduleRoute.get(
   "/",
-  validateRequest(getSchedulesSchema),
+//   validateRequest(getSchedulesSchema),
   scheduleController.getSchedules
 );
 

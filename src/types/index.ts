@@ -10,6 +10,7 @@ export interface CreateScheduleRequest {
   day: string;
   openTime: string;
   closeTime: string;
+  bookingTime: string[];
 }
 
 export interface CreateBookingRequest {
@@ -25,4 +26,9 @@ export interface ApiResponse<T = any> {
   message: string;
   data?: T;
   error?: string;
+}
+
+export interface DoctorScheduleRequest {
+  doctorId: number;
+  bookingTime: string[];
 }

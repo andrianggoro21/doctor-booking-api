@@ -1,5 +1,6 @@
 import { BookingRepository } from "../repositories/bookingRepository";
 import { DoctorRepository } from "../repositories/doctorRepository";
+import { DoctorScheduleRepository } from "../repositories/doctorScheduleRepository";
 import { ScheduleRepository } from "../repositories/scheduleRepository";
 import { getDayName, isTimeInRange, isValidTimeFormat } from "./dateHelper";
 
@@ -7,6 +8,7 @@ export const validateCreateBooking = async (
   doctorRepository: DoctorRepository,
   scheduleRepository: ScheduleRepository,
   bookingRepository: BookingRepository,
+  doctorScheduleRepository: DoctorScheduleRepository,
   doctorId: number,
   bookingDate: string,
   bookingTime: string
@@ -50,6 +52,12 @@ export const validateCreateBooking = async (
       `Waktu booking harus dalam rentang jam praktek: ${schedule.openTime} - ${schedule.closeTime}`
     );
   }
+
+  const scheduleDoctor = await doctorScheduleRepository.findScheduleDoctorBooking(
+    schedule.id,
+    bookingTime
+  )
+  
 
   const conflictingBooking = await bookingRepository.findConflictingBooking(
     doctorId,
