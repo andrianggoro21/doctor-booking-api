@@ -16,7 +16,6 @@ doctorRoute.post(
 );
 doctorRoute.get(
   "/",
-  validateRequest(getDoctorSchema),
   doctorController.getDoctors
 );
 

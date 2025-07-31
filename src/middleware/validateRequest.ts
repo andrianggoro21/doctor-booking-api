@@ -4,6 +4,8 @@ import { z } from "zod";
 export const validateRequest =
   (schema: z.Schema<any>) =>
   (req: Request, res: Response, next: NextFunction) => {
+    console.log("req.body", req.body);
+    
     const validationResult = schema.safeParse(req.body);
 
     if (!validationResult.success) {
