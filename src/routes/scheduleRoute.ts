@@ -1,10 +1,23 @@
-import { Router } from 'express';
-import { ScheduleController } from '../controllers/scheduleController';
+import { Router } from "express";
+import { ScheduleController } from "../controllers/scheduleController";
+import { validateRequest } from "../middleware/validateRequest";
+import {
+  createScheduleSchema,
+  getSchedulesSchema,
+} from "../validators/scheduleValidator";
 
 const scheduleRoute = Router();
 const scheduleController = new ScheduleController();
 
-scheduleRoute.post('/', scheduleController.createSchedule);
-scheduleRoute.get('/', scheduleController.getSchedules);
+scheduleRoute.post(
+  "/",
+  validateRequest(createScheduleSchema),
+  scheduleController.createSchedule
+);
+scheduleRoute.get(
+  "/",
+  validateRequest(getSchedulesSchema),
+  scheduleController.getSchedules
+);
 
 export default scheduleRoute;
