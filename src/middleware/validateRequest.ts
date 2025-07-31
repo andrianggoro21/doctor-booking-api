@@ -4,11 +4,7 @@ import { z } from "zod";
 export const validateRequest =
   (schema: z.Schema<any>) =>
   (req: Request, res: Response, next: NextFunction) => {
-    const validationResult = schema.safeParse({
-      ...req.body,
-      ...req.query,
-      ...req.params,
-    });
+    const validationResult = schema.safeParse(req.body);
 
     if (!validationResult.success) {
       const formattedErrors = simplifyZodError(validationResult.error.format);

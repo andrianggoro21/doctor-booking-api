@@ -8,7 +8,7 @@ const bookingController = new BookingController();
 
 bookingRoute.post(
   "/",
-  validateRequest(createBookingSchema),
+//   validateRequest(createBookingSchema),
   bookingController.createBooking
 );
 bookingRoute.get("/", bookingController.getBookings);

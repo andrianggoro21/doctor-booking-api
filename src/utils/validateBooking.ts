@@ -57,7 +57,13 @@ export const validateCreateBooking = async (
     schedule.id,
     bookingTime
   )
+
+  console.log("scheduleDoctor", scheduleDoctor);
   
+  
+  if (!scheduleDoctor || scheduleDoctor.length === 0) {
+    throw new Error("Waktu tersebut tidak tersedia untuk dokter ini");
+  }
 
   const conflictingBooking = await bookingRepository.findConflictingBooking(
     doctorId,
@@ -67,6 +73,9 @@ export const validateCreateBooking = async (
   if (conflictingBooking) {
     throw new Error("Waktu tersebut sudah dibooking oleh pasien lain");
   }
+
+  console.log("bookingDateObj", bookingDateObj);
+  
 
   return bookingDateObj;
 };
