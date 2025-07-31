@@ -1,5 +1,9 @@
 import { DoctorType } from "@prisma/client";
 import { DoctorRepository } from "../repositories/doctorRepository";
+import {
+  validateCreateDoctor,
+  validateGetDoctorId,
+} from "../utils/validateDoctor";
 
 export class DoctorService {
   private doctorRepository: DoctorRepository;
@@ -9,11 +13,7 @@ export class DoctorService {
   }
 
   async createDoctor(name: string, type: DoctorType) {
-    const existingDoctor = await this.doctorRepository.findByName(name);
-    if (existingDoctor) {
-      throw new Error("Dokter dengan nama tersebut sudah ada");
-    }
-
+    await validateCreateDoctor(this.doctorRepository, name);
     return await this.doctorRepository.create(name, type);
   }
 
@@ -23,9 +23,7 @@ export class DoctorService {
 
   async getDoctorById(id: number) {
     const doctor = await this.doctorRepository.findById(id);
-    if (!doctor) {
-      throw new Error("Dokter tidak ditemukan");
-    }
+    await validateGetDoctorId(doctor);
     return doctor;
   }
 }

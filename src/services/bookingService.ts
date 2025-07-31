@@ -1,11 +1,7 @@
 import { BookingRepository } from "../repositories/bookingRepository";
 import { ScheduleRepository } from "../repositories/scheduleRepository";
 import { DoctorRepository } from "../repositories/doctorRepository";
-import {
-  getDayName,
-  isValidTimeFormat,
-  isTimeInRange,
-} from "../utils/dateHelper";
+import { validateCreateBooking } from "../utils/validateBooking";
 
 export class BookingService {
   private bookingRepository: BookingRepository;
@@ -25,60 +21,19 @@ export class BookingService {
     bookingTime: string,
     doctorId: number
   ) {
-    const doctor = await this.doctorRepository.findById(doctorId);
-    if (!doctor) {
-      throw new Error("Dokter tidak ditemukan");
-    }
-
-    if (!isValidTimeFormat(bookingTime)) {
-      throw new Error("Format waktu tidak valid. Gunakan format HH:MM");
-    }
-
-    const bookingDateObj = new Date(bookingDate);
-    if (isNaN(bookingDateObj.getTime())) {
-      throw new Error("Format tanggal tidak valid");
-    }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (bookingDateObj < today) {
-      throw new Error(
-        "Tidak dapat melakukan booking untuk tanggal yang sudah lewat"
-      );
-    }
-
-    const dayName = getDayName(bookingDateObj);
-
-    const schedule = await this.scheduleRepository.findByDoctorAndDay(
+    const validateBookingDateObj = await validateCreateBooking(
+      this.doctorRepository,
+      this.scheduleRepository,
+      this.bookingRepository,
       doctorId,
-      dayName
+      bookingDate,
+      bookingTime
     );
-    if (!schedule) {
-      throw new Error(
-        `Dokter tidak memiliki jadwal praktek pada hari ${dayName}`
-      );
-    }
-
-    if (!isTimeInRange(bookingTime, schedule.openTime, schedule.closeTime)) {
-      throw new Error(
-        `Waktu booking harus dalam rentang jam praktek: ${schedule.openTime} - ${schedule.closeTime}`
-      );
-    }
-
-    const conflictingBooking =
-      await this.bookingRepository.findConflictingBooking(
-        doctorId,
-        bookingDateObj,
-        bookingTime
-      );
-    if (conflictingBooking) {
-      throw new Error("Waktu tersebut sudah dibooking oleh pasien lain");
-    }
 
     return await this.bookingRepository.create({
       patientName,
       phoneNumber,
-      bookingDate: bookingDateObj,
+      bookingDate: validateBookingDateObj,
       bookingTime,
       doctorId,
     });
